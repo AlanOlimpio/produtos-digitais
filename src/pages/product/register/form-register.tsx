@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { NumericFormat } from "react-number-format";
 import { priceParseFloat } from "@/utils/formatter";
+import { fileToBase64 } from "@/utils/file-to-base-64";
 
 const productSchema = z.object({
   name: z
@@ -45,14 +46,29 @@ export function FormRegister() {
     resolver: zodResolver(productSchema),
   });
 
-  function handleRegisterProduct(data: RegisterForm) {
-    const dataFormat = {
-      ...data,
-      price: priceParseFloat(data.price),
-    };
-    console.log(dataFormat);
-    reset();
+  async function handleRegisterProduct(data: RegisterForm) {
+    const fileList = data.image;
+
+    if (!fileList || fileList.length === 0) {
+      return;
+    }
+
+    const file = fileList[0];
+
+    try {
+      const base64 = await fileToBase64(file);
+      const dataFormat = {
+        ...data,
+        price: priceParseFloat(data.price),
+        image: base64,
+      };
+      console.log(dataFormat);
+      reset();
+    } catch (error) {
+      console.error("Erro ao processar a imagem:", error);
+    }
   }
+
   return (
     <form onSubmit={handleSubmit(handleRegisterProduct)}>
       <div className="grid grid-cols-2 py-4 gap-4 items-start max-sm:grid-cols-1">
