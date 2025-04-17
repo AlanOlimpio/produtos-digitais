@@ -1,4 +1,5 @@
 import { TableCell, TableRow } from "@/components/ui/table";
+import { priceFormatter } from "@/utils/formatter";
 
 export function ListTableRow(product: ProductData) {
   return (
@@ -11,7 +12,7 @@ export function ListTableRow(product: ProductData) {
         />
       </TableCell>
       <TableCell className="font-medium">{product.name}</TableCell>
-      <TableCell>{product.price}</TableCell>
+      <TableCell>{priceFormatter.format(product.price)}</TableCell>
       <TableCell className="text-right">{product.brand.name}</TableCell>
     </TableRow>
   );

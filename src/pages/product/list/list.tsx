@@ -7,11 +7,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import imageDorflex from "@/assets/images/dorflex-uno-20-comprimidos.jpg";
 import { ListTableRow } from "./list-table-row";
 import { Pagination } from "@/components/pagination";
+import { ProductsContext } from "@/contexts/products-context";
+import { useContext } from "react";
 
 export function List() {
+  const { products } = useContext(ProductsContext);
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold tracking-tight">Lista de produtos</h1>
@@ -28,14 +30,15 @@ export function List() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 8 }).map((_, index) => {
+          {products.map((product) => {
             return (
               <ListTableRow
-                id={index.toString()}
-                image={imageDorflex}
-                name="Dorflex"
-                price={15.0}
-                brand={{ id: "132123", name: "Sanofi" }}
+                id={product.id}
+                key={`product-${product.id}`}
+                image={product.image}
+                name={product.name}
+                price={product.price}
+                brand={{ id: product.brand.id, name: product.brand.name }}
               />
             );
           })}
