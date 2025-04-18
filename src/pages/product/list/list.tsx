@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -11,15 +10,16 @@ import { ListTableRow } from "./list-table-row";
 import { Pagination } from "@/components/pagination";
 import { ProductsContext } from "@/contexts/products-context";
 import { useContext } from "react";
+import { InputSearch } from "./search";
 
 export function List() {
   const { products } = useContext(ProductsContext);
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold tracking-tight">Lista de produtos</h1>
-      <form className="flex items-center gap-2">
-        <Input placeholder="Pesquisar" className="h-8 w-full max-w-[320px]" />
-      </form>
+      <div className="flex items-center gap-2">
+        <InputSearch />
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
