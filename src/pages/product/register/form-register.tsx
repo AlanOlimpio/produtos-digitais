@@ -7,6 +7,10 @@ import { z } from "zod";
 import { NumericFormat } from "react-number-format";
 import { priceParseFloat } from "@/utils/formatter";
 import { fileToBase64 } from "@/utils/file-to-base-64";
+import { useContext } from "react";
+import { ProductsContext } from "@/contexts/products-context";
+import { v4 as uuid } from "uuid";
+import { toast } from "sonner";
 
 const productSchema = z.object({
   name: z
@@ -36,6 +40,7 @@ const productSchema = z.object({
 type RegisterForm = z.infer<typeof productSchema>;
 
 export function FormRegister() {
+  const { createProduct } = useContext(ProductsContext);
   const {
     register,
     control,
@@ -61,11 +66,18 @@ export function FormRegister() {
         ...data,
         price: priceParseFloat(data.price),
         image: base64,
+        brand: {
+          id: uuid(),
+          name: data.brand,
+        },
       };
-      console.log(dataFormat);
+      await createProduct(dataFormat);
+      toast.success("Produto cadastrado com sucesso.");
+
       reset();
     } catch (error) {
-      console.error("Erro ao processar a imagem:", error);
+      toast.error("Ocorreu um erro.");
+      console.error("Erro ao enviar o formulário:", error);
     }
   }
 
@@ -79,7 +91,7 @@ export function FormRegister() {
           <Input
             className="w-full"
             id="name"
-            placeholder="name"
+            placeholder="Nome"
             {...register("name")}
           />
           {errors.name && (
@@ -121,7 +133,7 @@ export function FormRegister() {
         </div>
         <div className="grid items-center gap-4">
           <Label className="text-right" htmlFor="brand">
-            Nome
+            Marca
           </Label>
           <Input
             className="w-full"
@@ -147,7 +159,7 @@ export function FormRegister() {
           />
           {errors.image && (
             <span className="text-red-500 font-medium">
-              {errors.image?.message}
+              {errors.image?.message as string}
             </span>
           )}
         </div>

@@ -51,7 +51,7 @@ export function InputSearch() {
       isFirstLoad.current = false;
       return;
     }
-    console.log("Entrou aqui");
+
     handleSearch(debouncedValue);
   }, [debouncedValue]);
 

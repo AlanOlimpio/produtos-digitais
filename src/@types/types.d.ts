@@ -10,3 +10,5 @@ type ProductData = {
   brand: BrandData;
   description?: string;
 };
+
+type CreateProduct = Omit<ProductData, "id" | "description">;
