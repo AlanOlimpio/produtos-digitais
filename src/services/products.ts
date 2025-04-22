@@ -1,8 +1,8 @@
-import { urlParamsProps } from "@/contexts/products-context";
+import { perPage, urlParamsProps } from "@/contexts/products-context";
 import { api } from "../lib/axios";
 
 export function getProduct(urlParams: urlParamsProps) {
-  return api.get("products", {
+  return api.get(`products?_limit=${perPage}`, {
     params: { ...urlParams, _sort: "id", _order: "desc" },
   });
 }

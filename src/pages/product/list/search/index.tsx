@@ -30,12 +30,14 @@ export function InputSearch() {
 
   function handleSearch(query: string) {
     if (query) {
+      searchParams.delete("page");
       setSearchParams((params) => {
         params.set("q", query);
         return params;
       });
     } else {
       searchParams.delete("q");
+      searchParams.delete("page");
       setSearchParams(searchParams);
     }
   }

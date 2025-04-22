@@ -8,12 +8,28 @@ import {
 
 import { ListTableRow } from "./list-table-row";
 import { Pagination } from "@/components/pagination";
-import { ProductsContext } from "@/contexts/products-context";
+import { perPage, ProductsContext } from "@/contexts/products-context";
 import { useContext } from "react";
 import { InputSearch } from "./search";
+import { useSearchParams } from "react-router-dom";
+import { z } from "zod";
 
 export function List() {
-  const { products } = useContext(ProductsContext);
+  const { products, totalCount } = useContext(ProductsContext);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageIndex = z.coerce
+    .number()
+    .transform((page) => page - 1)
+    .parse(searchParams.get("page") ?? "1");
+
+  function handlePaginate(pageIndex: number) {
+    setSearchParams((state) => {
+      state.set("page", (pageIndex + 1).toString());
+      return state;
+    });
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold tracking-tight">Lista de produtos</h1>
@@ -24,7 +40,7 @@ export function List() {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Imagem</TableHead>
-            <TableHead>Nome</TableHead>
+            <TableHead className="w-[330px] max-md:w-[150px]">Nome</TableHead>
             <TableHead>Preço</TableHead>
             <TableHead className="text-right">Marca</TableHead>
           </TableRow>
@@ -44,7 +60,14 @@ export function List() {
           })}
         </TableBody>
       </Table>
-      <Pagination pageIndex={0} totalCount={105} perPage={10} />
+      {products && products.length > 0 && (
+        <Pagination
+          pageIndex={pageIndex}
+          totalCount={totalCount}
+          perPage={perPage}
+          onPageChange={handlePaginate}
+        />
+      )}
     </div>
   );
 }
