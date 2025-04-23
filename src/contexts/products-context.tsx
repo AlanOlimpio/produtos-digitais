@@ -7,6 +7,8 @@ interface ProductsContextType {
   createProduct: (data: CreateProduct) => Promise<void>;
   onPageChange: (pageIndex: number) => Promise<void> | void;
   totalCount: number;
+  isLoading: boolean;
+  isError: boolean;
 }
 
 interface ProductsProviderProps {
@@ -25,6 +27,8 @@ export function ProductsProvider({ children }: ProductsProviderProps) {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [total, setTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsErrors] = useState(false);
   const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
 
   const querySearch = searchParams.get("q") ? searchParams.get("q") : undefined;
@@ -45,9 +49,17 @@ export function ProductsProvider({ children }: ProductsProviderProps) {
       };
     }
 
-    const response = await getProduct(urlParams);
-    setTotal(response.headers["x-total-count"]);
-    setProducts(response.data);
+    try {
+      setIsLoading(true);
+      const response = await getProduct(urlParams);
+      setTotal(response.headers["x-total-count"]);
+      setProducts(response.data);
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+      setIsErrors(true);
+      console.log(e);
+    }
   }
 
   async function createProduct(data: CreateProduct) {
@@ -74,6 +86,8 @@ export function ProductsProvider({ children }: ProductsProviderProps) {
         createProduct,
         totalCount: total,
         onPageChange: handlePaginate,
+        isLoading,
+        isError,
       }}
     >
       {children}
