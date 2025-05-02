@@ -7,10 +7,9 @@ import { z } from "zod";
 import { NumericFormat } from "react-number-format";
 import { priceParseFloat } from "@/utils/formatter";
 import { fileToBase64 } from "@/utils/file-to-base-64";
-import { useContext } from "react";
-import { ProductsContext } from "@/contexts/products-context";
 import { v4 as uuid } from "uuid";
 import { toast } from "sonner";
+import { useProductsStore } from "@/stores/use-products-store";
 
 const productSchema = z.object({
   name: z
@@ -40,7 +39,7 @@ const productSchema = z.object({
 type RegisterForm = z.infer<typeof productSchema>;
 
 export function FormRegister() {
-  const { createProduct } = useContext(ProductsContext);
+  const { createProduct } = useProductsStore();
   const {
     register,
     control,

@@ -1,4 +1,4 @@
-import { perPage, urlParamsProps } from "@/contexts/products-context";
+import { perPage, urlParamsProps } from "@/stores/use-products-store";
 import { api } from "../lib/axios";
 
 export function getProduct(urlParams: urlParamsProps) {

@@ -8,8 +8,7 @@ import {
 
 import { ListTableRow } from "./list-table-row";
 import { Pagination } from "@/components/pagination";
-import { perPage, ProductsContext } from "@/contexts/products-context";
-import { useContext } from "react";
+import { useEffect } from "react";
 import { InputSearch } from "./search";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
@@ -19,14 +18,18 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { device } from "@/utils/media-querys";
 
 import { ListAccordion } from "./list-accordion";
+import { perPage, useProductsStore } from "@/stores/use-products-store";
 
 export function List() {
-  const { products, totalCount, isLoading, isError } =
-    useContext(ProductsContext);
+  const { fetchProducts, products, totalCount, isLoading, isError } =
+    useProductsStore();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
   const isMobile = useMediaQuery(device.tablet);
+
+  const page = Number(searchParams.get("page") || "1");
+  const q = searchParams.get("q") || undefined;
 
   const pageIndex = z.coerce
     .number()
@@ -39,6 +42,13 @@ export function List() {
       return state;
     });
   }
+
+  useEffect(() => {
+    fetchProducts({
+      _page: page,
+      q,
+    });
+  }, [page, q]);
 
   return (
     <div className="flex flex-col gap-4">
